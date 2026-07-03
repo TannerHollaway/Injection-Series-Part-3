@@ -23,13 +23,13 @@ PEstudio is a good tool to analyze a file without running it — it pulls string
 
 This is an attempt to clear the logs. That appeared to be everything obtainable through strings alone.
 
-![Decoded PowerShell in CyberChef](images/screenshot1.png)
-![PEstudio strings view](images/screenshot2.png)
+![Decoded PowerShell in CyberChef](screenshots/screenshot1.png)
+![PEstudio strings view](screenshots/screenshot2.png)
 
 ### Reverse Engineering
 Static strings weren't enough, so the next step was reverse engineering. Ghidra didn't surface the `main` function clearly, but swapping over to Cutter exposed it. Decompiling confirmed there is a single function containing the full logic — argument parsing, memory allocation, shellcode copy, and the PowerShell `system()` call.
 
-![Cutter decompiler — main](images/screenshot3.png)
+![Cutter decompiler — main](screenshots/screenshot3.png)
 
 ---
 
