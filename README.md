@@ -75,26 +75,13 @@ Confirmed in the Cutter decompiler: `memmove(esi, data.00403018, 0x120)` copies 
 Taken directly from the decoded `Clear-EventLog` command found during initial triage.
 
 ---
-
-## IOCs
-| Type | Value |
-|------|-------|
-| SHA256 | |
-| Domain / IP | |
-| File / Path | C:\Users\IEUser\Source\Repos\sample1\Release\sample1.pdb |
-
-## Analyst Notes
-The sample is a shellcode injector paired with anti-forensics. Depending on its argument it either allocates RWX memory (`VirtualAlloc` with PAGE_EXECUTE_READWRITE), copies a 288-byte MessageBox shellcode in via `memmove`, and executes it through a threadpool wait object (`CreateThreadpoolWait` + `WaitForSingleObject`), or it spawns `powershell -ep bypass -enc ...` to run `Clear-EventLog` against the Application, Windows PowerShell, Security, and System logs.
-
 Relevant MITRE ATT&CK:
 - T1055 – Process Injection
 - T1059.001 – Command and Scripting Interpreter: PowerShell
 - T1070.001 – Indicator Removal: Clear Windows Event Logs
 - T1027 – Obfuscated/Encoded Files (base64 `-enc` payload)
 
-Defenders should alert on `powershell -enc` with `Clear-EventLog`, RWX allocations followed by threadpool execution, and Security log 1102 (audit log cleared).
 
 ## Key Takeaways
 - Static triage (strings + decode) can reveal intent before any disassembly.
 - When Ghidra fails to resolve a function, a second tool like Cutter can fill the gap.
-- Reading Win32 API calls (`VirtualAlloc`, `memmove`, `CreateThreadpoolWait`) directly maps decompiled code to injection technique.
